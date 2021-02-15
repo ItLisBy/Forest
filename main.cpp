@@ -3,11 +3,11 @@
 using namespace sf;
 
 //Defines for window size
-#define WIDTH 1920
-#define HIGH 1080
+#define WIDTH 800
+#define HIGH 600
 
 int main() {
-    RenderWindow window(VideoMode(800, 600), "Forest", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(WIDTH, HIGH), "Forest", Style::Titlebar | Style::Close);
 
     window.setFramerateLimit(60);
 

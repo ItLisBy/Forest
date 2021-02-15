@@ -7,7 +7,7 @@ using namespace sf;
 #define HIGH 1080
 
 int main() {
-    Window window(VideoMode(800, 600), "Forest", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode(800, 600), "Forest", Style::Titlebar | Style::Close);
 
     window.setFramerateLimit(60);
 
@@ -21,8 +21,9 @@ int main() {
             if (event.type == Event::Closed)
                 window.close();
         }
+        window.clear(Color(255, 255, 255));
 
-
+        window.display();
     }
 
     return 0;

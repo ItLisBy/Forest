@@ -10,9 +10,7 @@ Button::Button(const String &showed_text, const Vector2f &size, const Vector2f &
     _text.setString(showed_text);
     _text.setCharacterSize(char_size);
     _text.setFillColor(text_color);
-    _text.setOrigin(_text.getOrigin().x + _text.getLocalBounds().width / 2.0f,
-                    _text.getOrigin().y + _text.getLocalBounds().height / 2.0f);
-    _text.setPosition(size.x / 2.0f,
+    _text.setPosition((size.x - _text.getGlobalBounds().width),
                       (size.y - _text.getLocalBounds().height) / 2.0f);
 
     //Setting up button view

@@ -17,7 +17,7 @@ int main() {
     main_font.loadFromFile("fonts/LiberationSans-Regular.ttf");
 
     //Setup start/stop button
-    Button s_button("Stop", Vector2f(160.0f, 40.0f), Vector2f(20.0f, 20.0f), 30, Color(225, 225, 225));
+    Button s_button("Start", Vector2f(160.0f, 40.0f), Vector2f(20.0f, 20.0f), 30, Color(225, 225, 225));
     s_button.setFont(main_font);
 
     //Loop program while it's window is open

@@ -22,6 +22,12 @@ public:
     Button(const String &showed_text, const Vector2f &size, const Vector2f &position, const int &char_size,
            const Color &bg_color, const Color &text_color = Color(0, 0, 0));
 
+    /// \param img
+    /// Sprite that will be on button
+    /// \param position
+    /// Position of button
+    Button(const Texture &img, const Vector2f &position);
+
     /// \bried
     /// Setting up font for text
     /// \param font
@@ -69,8 +75,9 @@ public:
     /// Drawable shape on button
     RectangleShape getShape();
 private:
-    RectangleShape _button;
+    RectangleShape _shape;
     Text _text;
+    Sprite _sprite;
     bool _clicked = false;
 };
 

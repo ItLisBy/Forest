@@ -14,9 +14,9 @@ Button::Button(const String &showed_text, const Vector2f &size, const Vector2f &
                       (size.y - _text.getLocalBounds().height) / 2.0f);
 
     //Setting up button view
-    _button.setSize(size);
-    _button.setFillColor(bg_color);
-    _button.setPosition(position);
+    _shape.setSize(size);
+    _shape.setFillColor(bg_color);
+    _shape.setPosition(position);
 }
 
 void Button::setFont(const Font &font) {
@@ -26,13 +26,13 @@ void Button::setFont(const Font &font) {
 
 void Button::changeBackColor(const Color &color) {
     //Set button's background color
-    _button.setFillColor(color);
+    _shape.setFillColor(color);
 }
 
 void Button::isClicked(const Vector2f &pos) {
     //Check is in button
-    if(pos.x > _button.getPosition().x && pos.x < (_button.getPosition().x + _button.getSize().x)) {
-        if(pos.y > _button.getPosition().y && pos.y < (_button.getPosition().y + _button.getSize().y)) {
+    if(pos.x > _shape.getPosition().x && pos.x < (_shape.getPosition().x + _shape.getSize().x)) {
+        if(pos.y > _shape.getPosition().y && pos.y < (_shape.getPosition().y + _shape.getSize().y)) {
             changeState(!_clicked);
         }
     }
@@ -41,10 +41,10 @@ void Button::isClicked(const Vector2f &pos) {
 void Button::changeState(const bool &curr) {
     _clicked = curr;
     if (_clicked) {
-        changeBackColor(_button.getFillColor() - Color(40, 40, 40));
+        changeBackColor(_shape.getFillColor() - Color(40, 40, 40));
         return;
     }
-    changeBackColor(_button.getFillColor() + Color(40, 40, 40));
+    changeBackColor(_shape.getFillColor() + Color(40, 40, 40));
 }
 
 Text Button::getText() {
@@ -52,9 +52,14 @@ Text Button::getText() {
 }
 
 RectangleShape Button::getShape() {
-    return _button;
+    return _shape;
 }
 
 void Button::setPosition(const Vector2f &pos) {
-    _button.setPosition(pos);
+    _shape.setPosition(pos);
+}
+
+Button::Button(const Texture &img, const Vector2f &position) {
+    _sprite.setTexture(img);
+
 }

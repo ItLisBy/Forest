@@ -4,62 +4,75 @@
 
 #include "Button.h"
 
-Button::Button(const String &showed_text, const Vector2f &size, const Vector2f &position, const int &char_size,
-               const Color &bg_color, const Color &text_color) {
-    //Setting up showed text
-    _text.setString(showed_text);
-    _text.setCharacterSize(char_size);
-    _text.setFillColor(text_color);
-    _text.setPosition((size.x - _text.getGlobalBounds().width),
-                      (size.y - _text.getLocalBounds().height) / 2.0f);
+Button::Button(const String &id, const Texture &img, const IntRect &text_area, const IntRect &background_area,
+               const Vector2f &position) {
+    name_ = id;
+    text_area_ = text_area;
+    background_area_ = background_area;
 
-    //Setting up button view
-    _shape.setSize(size);
-    _shape.setFillColor(bg_color);
-    _shape.setPosition(position);
+    text_.setTexture(img);
+    text_.setTextureRect(text_area_);
+    text_.setPosition(position);
+
+    background_.setTexture(img);
+    background_.setTextureRect(background_area_);
+    background_.setPosition(position);
+
 }
 
-void Button::setFont(const Font &font) {
-    //Set font
-    _text.setFont(font);
-}
-
-void Button::changeBackColor(const Color &color) {
+void Button::changeBackground(const IntRect &background_area) {
     //Set button's background color
-    _shape.setFillColor(color);
+    background_.setTextureRect(background_area);
+    background_area_ = background_area;
 }
 
-void Button::isClicked(const Vector2f &pos) {
+bool Button::isClicked(const Vector2i &pos) {
     //Check is in button
-    if(pos.x > _shape.getPosition().x && pos.x < (_shape.getPosition().x + _shape.getSize().x)) {
-        if(pos.y > _shape.getPosition().y && pos.y < (_shape.getPosition().y + _shape.getSize().y)) {
-            changeState(!_clicked);
+    if (clicked_) {
+        changeState(false);
+    }
+    else if (pos.x > text_.getPosition().x && pos.x < (text_.getPosition().x + text_.getLocalBounds().width)) {
+        if (pos.y > text_.getPosition().y && pos.y < (text_.getPosition().y + text_.getLocalBounds().height)) {
+            changeState(true);
         }
     }
+    return clicked_;
 }
 
 void Button::changeState(const bool &curr) {
-    _clicked = curr;
-    if (_clicked) {
-        changeBackColor(_shape.getFillColor() - Color(40, 40, 40));
+    clicked_ = curr;
+    if (clicked_) {
+        background_.setColor(Color(204, 228, 247));
         return;
     }
-    changeBackColor(_shape.getFillColor() + Color(40, 40, 40));
+    background_.setColor(Color::White);
 }
 
-Text Button::getText() {
-    return _text;
-}
-
-RectangleShape Button::getShape() {
-    return _shape;
+Sprite Button::getDrawable() {
+    return text_;
 }
 
 void Button::setPosition(const Vector2f &pos) {
-    _shape.setPosition(pos);
+    text_.setPosition(pos);
+    background_.setPosition(pos);
 }
 
-Button::Button(const Texture &img, const Vector2f &position) {
-    _sprite.setTexture(img);
+void Button::setText(const IntRect &text_area) {
+    text_area_ = text_area;
+    text_.setTextureRect(text_area_);
+}
+
+void Button::draw(RenderTarget &target, sf::RenderStates states) const {
+    target.draw(background_, states);
+    target.draw(text_, states);
+}
+
+void Button::update() {
 
 }
+
+String Button::getName(){
+    return name_;
+}
+
+

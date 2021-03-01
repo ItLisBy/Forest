@@ -7,44 +7,26 @@ using namespace sf;
 
 /// \brief Button class
 ///
-class Button {
+class Button : public Drawable{
 public:
-    /// \param showed_text
-    /// Text that will be showed on button
-    /// \param size
-    /// Size of button like Vector2
-    /// \param char_size
-    /// Size of text
-    /// \param bg_color
-    /// Color of button background
-    /// \param text_color
-    /// Color of text on button
-    Button(const String &showed_text, const Vector2f &size, const Vector2f &position, const int &char_size,
-           const Color &bg_color, const Color &text_color = Color(0, 0, 0));
-
-    /// \param img
-    /// Sprite that will be on button
-    /// \param position
-    /// Position of button
-    Button(const Texture &img, const Vector2f &position);
-
-    /// \bried
-    /// Setting up font for text
-    /// \param font
-    /// Font that will be using
-    void setFont(const Font &font);
+    ///
+    /// \param img Whole texture
+    /// \param text_area Area with text
+    /// \param background_area Area with background
+    /// \param position Position of button
+    Button(const String &id, const Texture &img, const IntRect &text_area, const IntRect &background_area,
+           const Vector2f &position);
 
     /// \brief
-    /// Change button's background color
-    /// \param color
-    /// Color for background
-    void changeBackColor(const Color &color);
+    /// Change button's background texture
+    /// \param background_area Area with  texture
+    void changeBackground(const IntRect &background_area);
 
     /// \brief
     /// Check is pos in button
     /// \param pos
     /// Position that is checked
-    void isClicked(const Vector2f &pos);
+    bool isClicked(const Vector2i &pos);
 
     /// \brief
     /// Change state of button to curr(-ent)
@@ -54,31 +36,36 @@ public:
     void changeState(const bool &curr);
 
     /// \brief
-    /// Set new text for button
-    /// \param text
-    /// New text
-    void setText(const Text &text);
-
-    /// \brief
     /// Set position of button
     /// \param pos
     /// New position of button
     void setPosition(const Vector2f &pos);
 
-    ///
-    /// \return
-    /// Text that is showing on button
-    Text getText();
+    /// \brief
+    /// Set new texture for button
+    /// \param img
+    /// New texture
+    void setText(const IntRect &text_area);
 
     ///
     /// \return
     /// Drawable shape on button
-    RectangleShape getShape();
+    Sprite getDrawable();
+
+
+    void draw(RenderTarget& target, RenderStates states) const override;
+
+    void update();
+
+    String getName();
+
 private:
-    RectangleShape _shape;
-    Text _text;
-    Sprite _sprite;
-    bool _clicked = false;
+    String name_;
+    Sprite text_;
+    Sprite background_;
+    IntRect text_area_;
+    IntRect background_area_;
+    bool clicked_ = false;
 };
 
 

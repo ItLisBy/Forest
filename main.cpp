@@ -16,10 +16,15 @@ int main() {
     Font main_font;
     main_font.loadFromFile("fonts/LiberationSans-Regular.ttf");
 
-    //Setup start/stop button
-    Button s_button("Start", Vector2f(160.0f, 40.0f), Vector2f(20.0f, 20.0f), 30, Color(225, 225, 225));
-    s_button.setFont(main_font);
+    //Load main texture
+    Texture main_texture;
+    main_texture.loadFromFile("textures/textures.png");
 
+    //Setup start/stop button
+    Button s_button("btn_s", main_texture,
+                    IntRect(0, 40, 160, 40),
+                    IntRect(0, 0, 160, 40),
+                    Vector2f(20.0f, 20.0f));
     //Loop program while it's window is open
     while(window.isOpen()){
         //Handling events
@@ -29,11 +34,15 @@ int main() {
             // "close requested" event: we close the window
             if (event.type == Event::Closed)
                 window.close();
+            else if (event.type == Event::MouseButtonPressed || event.type == Event::MouseButtonReleased)
+                if (s_button.isClicked(Mouse::getPosition(window))){
+                    s_button.setText(IntRect(0, 80, 160, 40));
+                }
         }
+
         window.clear(Color(255, 255, 255));
 
-        window.draw(s_button.getShape());
-        window.draw(s_button.getText());
+        window.draw(s_button);
 
         window.display();
     }

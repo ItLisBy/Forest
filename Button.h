@@ -59,6 +59,8 @@ public:
 
     String getName();
 
+    void s_btn_Click();
+
 private:
     String name_;
     Sprite text_;

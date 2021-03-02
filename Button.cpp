@@ -4,7 +4,7 @@
 
 #include "Button.h"
 
-Button::Button(const String &id, const Texture &img, const IntRect &text_area, const IntRect &background_area,
+Button::Button(const String &id, const Texture &img, const IntRect &text_area, const IntRect &background_area, // NOLINT(cppcoreguidelines-pro-type-member-init)
                const Vector2f &position) {
     name_ = id;
     text_area_ = text_area;
@@ -74,5 +74,4 @@ void Button::update() {
 String Button::getName(){
     return name_;
 }
-
 

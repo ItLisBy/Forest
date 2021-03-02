@@ -7,6 +7,8 @@ using namespace sf;
 #define WIDTH 800
 #define HEIGHT 600
 
+bool started = false;
+
 int main() {
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Forest", Style::Titlebar | Style::Close);
 
@@ -25,7 +27,8 @@ int main() {
                     IntRect(0, 40, 160, 40),
                     IntRect(0, 0, 160, 40),
                     Vector2f(20.0f, 20.0f));
-    //Loop program while it's window is open
+
+        //Loop program while it's window is open
     while(window.isOpen()){
         //Handling events
         Event event;
@@ -36,7 +39,8 @@ int main() {
                 window.close();
             else if (event.type == Event::MouseButtonPressed || event.type == Event::MouseButtonReleased)
                 if (s_button.isClicked(Mouse::getPosition(window))){
-                    s_button.setText(IntRect(0, 80, 160, 40));
+                    //s_button.setText(IntRect(0, 80, 160, 40));
+                    s_button.s_btn_Click();
                 }
         }
 
@@ -48,4 +52,14 @@ int main() {
     }
 
     return 0;
+}
+
+void Button::s_btn_Click() {
+    if (this->text_area_.top == 40) {
+        this->setText(IntRect(0, 80, 160, 40));
+    }
+    else if (this->text_area_.top == 80) {
+        this->setText(IntRect(0, 40, 160, 40));
+    }
+    started = !started;
 }

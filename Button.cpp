@@ -4,7 +4,7 @@
 
 #include "Button.h"
 
-Button::Button(const String &id, const Texture &img, const IntRect &text_area, const IntRect &background_area, // NOLINT(cppcoreguidelines-pro-type-member-init)
+Button::Button(const String &id, const Texture &img, const IntRect &text_area, const IntRect &background_area,
                const Vector2f &position) {
     name_ = id;
     text_area_ = text_area;
@@ -48,10 +48,6 @@ void Button::changeState(const bool &curr) {
     background_.setColor(Color::White);
 }
 
-Sprite Button::getDrawable() {
-    return text_;
-}
-
 void Button::setPosition(const Vector2f &pos) {
     text_.setPosition(pos);
     background_.setPosition(pos);
@@ -67,11 +63,11 @@ void Button::draw(RenderTarget &target, sf::RenderStates states) const {
     target.draw(text_, states);
 }
 
-void Button::update() {
-
+sf::String Button::getName(){
+    return name_;
 }
 
-String Button::getName(){
-    return name_;
+void Button::setName(const String &name) {
+    this->name_ = name;
 }
 

@@ -5,7 +5,9 @@
 
 class Animal {
 public:
-    enum SexType {female, male};
+    enum SexType {
+        female, male
+    };
 
     struct Gen {
         int speed;
@@ -13,14 +15,20 @@ public:
     };
 
     virtual void sleep();
+
     virtual void breeding(Animal &animal);
+
     virtual void drink();
+
     virtual void eat();
+
     virtual void setPosition(const sf::Vector2i &pos);
+
     virtual sf::Vector2i getPosition();
 
-    const SexType getSex();
-    const Gen* getGenom();
+    const Animal::SexType getSex();
+
+    const Animal::Gen *getGenom();
 
 protected:
     SexType sex_;
@@ -32,9 +40,10 @@ protected:
     sf::Vector2i position_;
 };
 
-class Sheep : public Animal{
+class Sheep : public Animal {
 public:
     Sheep(const sf::Vector2i &pos, const Animal::SexType &sex, const int &hunger, const int &thirst,
           const int &tiredness, const int &breed);
 };
+
 #endif //FOREST_ANIMALS_H

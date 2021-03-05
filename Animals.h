@@ -9,14 +9,20 @@ public:
         female, male
     };
 
+    /// \brief Struct that represent one gene of "animal"
+    /// \var speed With this speed "animal" param will decrease
+    /// \var limit On this level param will influence
     struct Gen {
         int speed;
         int limit;
     };
 
+    Animal (const sf::Vector2i &pos, const Animal::SexType &sex, const int &hunger, const int &thirst,
+            const int &tiredness, const int &breed);
+
     virtual void sleep();
 
-    virtual void breeding(Animal &animal);
+    virtual void breeding(Animal* animal) = 0;
 
     virtual void drink();
 
@@ -24,11 +30,11 @@ public:
 
     virtual void setPosition(const sf::Vector2i &pos);
 
-    virtual sf::Vector2i getPosition();
+    sf::Vector2i getPosition();
 
-    const Animal::SexType getSex();
+    Animal::SexType getSex();
 
-    const Animal::Gen *getGenom();
+    Animal::Gen *getGenom();
 
 protected:
     SexType sex_;
@@ -42,8 +48,10 @@ protected:
 
 class Sheep : public Animal {
 public:
-    Sheep(const sf::Vector2i &pos, const Animal::SexType &sex, const int &hunger, const int &thirst,
-          const int &tiredness, const int &breed);
+    Sheep(const sf::Vector2i &pos, const Animal::SexType &sex,
+          const int &hunger, const int &thirst, const int &tiredness, const int &breed);
+
+    void breeding(Animal* animal) override;
 };
 
 #endif //FOREST_ANIMALS_H

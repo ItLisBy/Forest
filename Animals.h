@@ -8,6 +8,11 @@ public:
     enum SexType {
         female, male
     };
+    enum AnimalsType {
+        None = -1,
+        Sheep,
+        Wolf
+    };
 
     /// \brief Struct that represent one gene of "animal"
     /// \var speed With this speed "animal" param will decrease

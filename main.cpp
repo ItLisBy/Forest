@@ -1,5 +1,6 @@
 #include "SFML/Graphics.hpp"
 #include "Button.h"
+#include "Map.h"
 
 using namespace sf;
 
@@ -10,6 +11,9 @@ using namespace sf;
 bool started = false;
 
 int main() {
+
+    Map main_map(Map::TerritoryType::middle_forest);
+
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Forest", Style::Titlebar | Style::Close);
 
     window.setFramerateLimit(60);
@@ -28,7 +32,7 @@ int main() {
                     IntRect(0, 0, 160, 40),
                     Vector2f(20.0f, 20.0f));
 
-        //Loop program while it's window is open
+    //Loop program while it's window is open
     while(window.isOpen()){
         //Handling events
         Event event;

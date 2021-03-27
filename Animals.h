@@ -3,19 +3,21 @@
 
 #include "SFML/System.hpp"
 
+enum AnimalType {
+    no_animal = -1,
+    Sheep,
+    Wolf
+};
+
 class Animal {
 public:
     enum SexType {
         female, male
     };
-    enum AnimalsType {
-        None = -1,
-        Sheep,
-        Wolf
-    };
 
-    /// \brief Struct that represent one gene of "animal"
-    /// \var speed With this speed "animal" param will decrease
+
+    /// \brief Struct that represent one gene of "animals"
+    /// \var speed With this speed "animals" param will decrease
     /// \var limit On this level param will influence
     struct Gen {
         int speed;

@@ -33,13 +33,24 @@ public:
     };
 
     Map(const Map::TerritoryType &current_territory);
+
+    /// \brief Function that spawn animals on map
+    /// \param all Vector of integers. Every integer is number of animals of some type. Type depends on index
     void Spawn(const std::vector<int> &all);
 
+    /// \brief Find first entity of type T from pos
+    /// \tparam T Type of entity to find
+    /// \param map_type Type of map in which to find
+    /// \param type_find Search object
+    /// \param pos From what coordinates search
+    /// \return Position like a sf::Vector2i
     template<typename T>
     sf::Vector2i find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos);
 
 private:
+    /// Define what set of textures should we use
     const TerritoryType current_territory;
+
     std::vector<std::vector<TerrainType>> terrain_map;
     std::vector<std::vector<EntityType>> entities_map;
     std::vector<std::vector<AnimalType>> animals_map;

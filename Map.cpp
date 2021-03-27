@@ -55,7 +55,10 @@ void Map::Spawn(const std::vector<int> &all) {
             if (terrain_map[pos / 64][pos % 64] != TerrainType::river &&
                 terrain_map[pos / 64][pos % 64] != TerrainType::rock &&
                 entities_map[pos / 64][pos % 64] == EntityType::no_entity) {
-
+                animals_map[pos / 64][pos % 64] = AnimalType(i);
+            }
+            else {
+                j -= 1;
             }
         }
     }

@@ -65,7 +65,7 @@ void Map::Spawn(const std::vector<int> &all) {
 }
 
 template<typename T>
-sf::Vector2i Map::find(const Map::Maps &map_type, const T &type_find, const sf::Vector2i &pos) {
+sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos, const int &circle) {
     std::vector<std::vector<T>>* map;
     if (map_type == Maps::terrain) {
         map = &terrain_map;
@@ -76,14 +76,37 @@ sf::Vector2i Map::find(const Map::Maps &map_type, const T &type_find, const sf::
     else if (map_type == Maps::animals) {
         map = &animals_map;
     }
-    // Find first from pos
-    for (int i = pos.y; i < map->size(); ++i) {
-        for (int j = pos.x; j < map[i].size(); ++j) {
-            if (map[i][j] == type_find) {
-                return sf::Vector2i(j, i);
+
+    std::vector<sf::Vector2i> on_circle;
+    sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
+    short roots[] =  {0, 1, 0, -1, 0};
+
+    // 4 is number of "sides" of circle that we should inspect
+    for (int i = 0; i < 4; ++i) {
+        int delta_y = roots[i];
+        int delta_x = roots[i+1];
+
+        for (int j = 0; j < circle*2; ++j) {
+            if (map[current_pos.y][current_pos.x] == type_find) {
+                on_circle.push_back(sf::Vector2i(current_pos.x, current_pos.y));
             }
+            current_pos += sf::Vector2i(delta_x, delta_y);
         }
     }
-    return sf::Vector2i(-1, -1);
+
+    // If entities not found then go to the next circle
+    if (on_circle.empty()) {
+        return find(map_type, type_find, pos, circle + 1);
+    }
+    else {
+        sf::Vector2i min = on_circle[0];
+        for (auto p : on_circle) {
+            if (vector_length(pos - p) < vector_length(pos - min)) {
+                min = p;
+            }
+        }
+        return min;
+    }
+
 }
 

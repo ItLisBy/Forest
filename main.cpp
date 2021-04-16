@@ -8,17 +8,19 @@ using namespace sf;
 #define WIDTH 800
 #define HEIGHT 600
 
-bool started = false;
-
 int main() {
     bool stopped = true;
 
+    Map main_map(Map::TerritoryType::middle_forest);
+
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Forest", Style::Titlebar | Style::Close);
+
     window.setFramerateLimit(200);
     ImGui::SFML::Init(window);
 
     //Loop program while it's window is open
     Clock delta_clock;
+
     while(window.isOpen()){
         Event event;
         int process;

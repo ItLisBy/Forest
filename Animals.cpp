@@ -40,14 +40,7 @@ Animal::Animal(const sf::Vector2i &pos, const Animal::SexType &sex, const int &h
 
 Sheep::Sheep(const sf::Vector2i &pos, const Animal::SexType &sex,
              const int &hunger = 255, const int &thirst = 255, const int &tiredness = 255, const int &breed = 255)
-        : Animal(pos, sex, hunger, thirst, tiredness, breed) {
-    this->position_ = pos;
-    this->sex_ = sex;
-    this->hunger_ = hunger;
-    this->thirst_ = thirst;
-    this->tiredness_ = tiredness;
-    this->breed_ = breed;
-}
+        : Animal(pos, sex, hunger, thirst, tiredness, breed) { }
 
 void Sheep::breeding(Animal *animal) {
 

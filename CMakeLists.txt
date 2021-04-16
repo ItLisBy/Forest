@@ -4,7 +4,8 @@ project(Forest)
 set(CMAKE_CXX_STANDARD 17)
 
 if (CMAKE_HOST_WIN32)
-    set(SFML_DIR "C:/SFML/SFML-gcc/lib/cmake/SFML")
+    set(SFML_DIR "C:/libs/SFML/SFML-gcc/lib/cmake/SFML")
+    set(ImGui-SFML_DIR "c:/libs/imgui-sfml/lib/cmake/ImGui-SFML")
 endif ()
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)

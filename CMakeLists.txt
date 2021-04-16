@@ -8,7 +8,9 @@ if (CMAKE_HOST_WIN32)
 endif ()
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+find_package(ImGui-SFML REQUIRED)
 
 add_executable(Forest main.cpp Button.cpp Button.h Animals.cpp Animals.h Map.cpp Map.h)
 
 target_link_libraries(Forest sfml-graphics sfml-audio)
+target_link_libraries(Forest ImGui-SFML::ImGui-SFML)

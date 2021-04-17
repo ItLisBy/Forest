@@ -110,3 +110,27 @@ sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vecto
 
 }
 
+std::vector<sf::Vector2i> Map::neighbors(const sf::Vector2i &curr) {
+    std::vector<sf::Vector2i> result;
+    for (auto &dir : DIRS) {
+        sf::Vector2i next(curr.x + dir.x, curr.y + dir.y);
+        if (terrain_map[next.y][next.x] < 2 && terrain_map[next.y][next.x] != -1) {
+            result.push_back(next);
+        }
+    }
+    return result;
+}
+
+int Map::cost(const sf::Vector2i &from, const sf::Vector2i &to) {
+    return ((to - from).x || (to - from).y) ? 2 : 1;
+}
+
+void Map::find_path(const sf::Vector2i &start, const sf::Vector2i &goal,
+                    std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
+                    std::unordered_map<sf::Vector2i, int> &cost_so_far) {
+
+}
+
+inline double heuristic(const sf::Vector2i &a, const sf::Vector2i &b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}

@@ -39,7 +39,6 @@ int main() {
 
         if (stopped){
             ImGui::Begin("Tools");
-            ImGui::
             if(ImGui::Button("Start", ImVec2(160, 40))) {
                 stopped = false;
             }

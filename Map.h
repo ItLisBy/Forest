@@ -47,6 +47,16 @@ public:
     template<typename T>
     sf::Vector2i find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos, const int &circle);
 
+    std::vector<sf::Vector2i> neighbors(const sf::Vector2i &curr);
+
+    int cost(const sf::Vector2i &from, const sf::Vector2i &to);
+
+    void find_path(const sf::Vector2i &start, const sf::Vector2i &goal,
+                   std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from,
+                   std::unordered_map<sf::Vector2i, int>& cost_so_far);
+
+    inline double heuristic(const sf::Vector2i &a, const sf::Vector2i &b);
+
 private:
     /// Define what set of textures should we use
     const TerritoryType current_territory;
@@ -54,6 +64,15 @@ private:
     std::vector<std::vector<TerrainType>> terrain_map;
     std::vector<std::vector<EntityType>> entities_map;
     std::vector<std::vector<AnimalType>> animals_map;
+
+    std::array<sf::Vector2i, 8> DIRS {sf::Vector2i(1, 0),
+                                      sf::Vector2i(0, -1),
+                                      sf::Vector2i(-1, 0),
+                                      sf::Vector2i(0, 1),
+                                      sf::Vector2i(1, 1),
+                                      sf::Vector2i(-1, -1),
+                                      sf::Vector2i(-1, 1),
+                                      sf::Vector2i(1, -1)};
 };
 
 

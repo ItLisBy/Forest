@@ -1,6 +1,7 @@
 #ifndef FOREST_ANIMALS_H
 #define FOREST_ANIMALS_H
 
+#include <vector>
 #include "SFML/System.hpp"
 
 enum AnimalType {
@@ -51,6 +52,7 @@ protected:
     int thirst_;
     int tiredness_;
     sf::Vector2i position_;
+    std::vector<sf::Vector2i> path_;
 };
 
 class Sheep : public Animal {

@@ -6,7 +6,7 @@ namespace std {
     template <> struct hash<sf::Vector2i> {
         typedef sf::Vector2i argument_type;
         typedef std::size_t result_type;
-        std::size_t operator()(const Vector2i& id) const noexcept {
+        std::size_t operator()(const sf::Vector2i& id) const noexcept {
             return std::hash<int>()(id.x ^ (id.y << 4));
         }
     };
@@ -57,7 +57,7 @@ Map::Map(const Map::TerritoryType &current_territory)
 
 }
 
-void Map::Spawn(const std::vector<int> &all) {
+void Map::spawn(const std::vector<int> &all) {
     srand(time(0));
     for (int i = 0; i < all.size(); ++i) {
         for (int j = 0; j < all[i]; ++j) {
@@ -120,10 +120,10 @@ sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vecto
 
 }
 
-void Map::neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result) {
+void Map::neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result, const Map &map) {
     for (auto &dir : DIRS) {
         sf::Vector2i next(curr.x + dir.x, curr.y + dir.y);
-        if (terrain_map[next.y][next.x] < 2 && terrain_map[next.y][next.x] != -1) {
+        if (next.x < 64 && next.y < 64 && map.terrain_map[next.y][next.x] < 2 && map.terrain_map[next.y][next.x] != -1) {
             result.push_back(next);
         }
     }
@@ -133,29 +133,36 @@ double Map::cost(const sf::Vector2i &from, const sf::Vector2i &to) {
     return ((to - from).x || (to - from).y) ? 2 : 1;
 }
 
-void Map::a_star(const sf::Vector2i start, const sf::Vector2i goal,
-                 std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from) {
+void Map::a_star(const sf::Vector2i &start, const sf::Vector2i &goal,
+                 std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from, const Map &map) {
+
+    auto my_comp =
+            [](const std::pair<sf::Vector2i, double> &e1, const std::pair<sf::Vector2i, double> &e2)
+            { return e1.second > e2.second; };
+
     std::vector<sf::Vector2i> curr_neighbours;
     std::unordered_map<sf::Vector2i, double> cost_so_far;
-    PriorityQueue<sf::Vector2i, double> frontier;
-    frontier.put(start, 0);
+    std::priority_queue<std::pair<sf::Vector2i, double>, std::vector<std::pair<sf::Vector2i, double>>, decltype(my_comp)> frontier(my_comp);
+    frontier.push(std::make_pair(start, 0));
 
     came_from[start] = start;
     cost_so_far[start] = 0;
 
     while (!frontier.empty()) {
-        auto current = frontier.get();
+        auto current = frontier.top().first;
+        frontier.pop();
 
         if (current == goal) {
             break;
         }
-        neighbors(current, curr_neighbours);
+
+        neighbors(current, curr_neighbours, map);
         for (auto& next : curr_neighbours) {
             double new_cost = cost_so_far[current] + cost(current, next);
             if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) {
                 cost_so_far[next] = new_cost;
                 double priority = new_cost + heuristic(next, goal);
-                frontier.put(next, priority);
+                frontier.push(std::make_pair(next, priority));
                 came_from[next] = current;
             }
         }
@@ -166,17 +173,19 @@ double Map::heuristic(const sf::Vector2i &a, const sf::Vector2i &b) {
     return abs(a.x - b.x) + abs(a.y - b.y);
 }
 
-std::vector<sf::Vector2i> Map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal,
-                                                std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from) {
-    std::vector<sf::Vector2i> path;
+void Map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
+                      std::vector<sf::Vector2i> &path) {
     sf::Vector2i current = goal;
     path.push_back(current);
     while (current != start) {
         current = came_from[current];
         path.push_back(current);
     }
-    path.push_back(start); // необязательно
     std::reverse(path.begin(), path.end());
-    return path;
+}
+
+void
+Map::find_path(const sf::Vector2i start, const sf::Vector2i goal, std::vector<sf::Vector2i> &path, const Map &map) {
+
 }
 

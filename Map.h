@@ -38,7 +38,7 @@ public:
 
     /// \brief Function that spawn animals on map
     /// \param all Vector of integers. Every integer is number of animals of some type. Type depends on index
-    void Spawn(const std::vector<int> &all);
+    void spawn(const std::vector<int> &all);
 
     /// \brief Find the closest entity of type T to pos
     /// \tparam T Type of entity to find
@@ -50,17 +50,19 @@ public:
     template<typename T>
     sf::Vector2i find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos, const int &circle);
 
-    void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result);
+    void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result, const Map &map);
 
     double cost(const sf::Vector2i &from, const sf::Vector2i &to);
 
-    void a_star(const sf::Vector2i start, const sf::Vector2i goal,
-                std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from);
+    void a_star(const sf::Vector2i &start, const sf::Vector2i &goal,
+                std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from, const Map &map);
 
-    std::vector<sf::Vector2i> reconstruct_path (sf::Vector2i start, sf::Vector2i goal,
-                                                std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from);
+    void reconstruct_path(sf::Vector2i start, sf::Vector2i goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
+                          std::vector<sf::Vector2i> &path);
 
     inline double heuristic(const sf::Vector2i &a, const sf::Vector2i &b);
+
+    void find_path(const sf::Vector2i start, const sf::Vector2i goal, std::vector<sf::Vector2i> &path, const Map &map);
 
 private:
     /// Define what set of textures should we use
@@ -73,32 +75,7 @@ private:
     std::array<sf::Vector2i, 8> DIRS {sf::Vector2i(1, 0),
                                       sf::Vector2i(0, -1),
                                       sf::Vector2i(-1, 0),
-                                      sf::Vector2i(0, 1),
-                                      sf::Vector2i(1, 1),
-                                      sf::Vector2i(-1, -1),
-                                      sf::Vector2i(-1, 1),
-                                      sf::Vector2i(1, -1)};
-};
-
-template<typename T, typename priority_t>
-struct PriorityQueue {
-    typedef std::pair<priority_t, T> PQElement;
-    std::priority_queue<PQElement, std::vector<PQElement>,
-    std::greater<PQElement>> elements;
-
-    inline bool empty() {
-        return elements.empty();
-    }
-
-    inline void put(T item, priority_t priority) {
-        elements.emplace(priority, item);
-    }
-
-    inline T get() {
-        T best_item = elements.top().second;
-        elements.pop();
-        return best_item;
-    }
+                                      sf::Vector2i(0, 1)};
 };
 
 #endif //FOREST_MAP_H

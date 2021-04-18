@@ -5,6 +5,9 @@
 #include <random>
 #include <ctime>
 #include <vector>
+#include <queue>
+#include <unordered_map>
+
 
 enum EntityType {
     no_entity,
@@ -47,13 +50,15 @@ public:
     template<typename T>
     sf::Vector2i find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos, const int &circle);
 
-    std::vector<sf::Vector2i> neighbors(const sf::Vector2i &curr);
+    void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result);
 
-    int cost(const sf::Vector2i &from, const sf::Vector2i &to);
+    double cost(const sf::Vector2i &from, const sf::Vector2i &to);
 
-    void find_path(const sf::Vector2i &start, const sf::Vector2i &goal,
-                   std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from,
-                   std::unordered_map<sf::Vector2i, int>& cost_so_far);
+    void a_star(const sf::Vector2i start, const sf::Vector2i goal,
+                std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from);
+
+    std::vector<sf::Vector2i> reconstruct_path (sf::Vector2i start, sf::Vector2i goal,
+                                                std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from);
 
     inline double heuristic(const sf::Vector2i &a, const sf::Vector2i &b);
 
@@ -75,5 +80,25 @@ private:
                                       sf::Vector2i(1, -1)};
 };
 
+template<typename T, typename priority_t>
+struct PriorityQueue {
+    typedef std::pair<priority_t, T> PQElement;
+    std::priority_queue<PQElement, std::vector<PQElement>,
+    std::greater<PQElement>> elements;
+
+    inline bool empty() {
+        return elements.empty();
+    }
+
+    inline void put(T item, priority_t priority) {
+        elements.emplace(priority, item);
+    }
+
+    inline T get() {
+        T best_item = elements.top().second;
+        elements.pop();
+        return best_item;
+    }
+};
 
 #endif //FOREST_MAP_H

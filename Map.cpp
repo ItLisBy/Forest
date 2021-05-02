@@ -12,12 +12,16 @@ namespace std {
     };
 }
 
+const std::array<sf::Vector2i, 8> Map::DIRS =  {sf::Vector2i(1, 0),
+                                                sf::Vector2i(0, -1),
+                                                sf::Vector2i(-1, 0),
+                                                sf::Vector2i(0, 1)};
+
 int vector_length(const sf::Vector2i &vec){
     return sqrt((vec.x*vec.x) + (vec.y*vec.y));
 }
 
-Map::Map(const Map::TerritoryType &current_territory)
-        :current_territory(current_territory) {
+Map::Map() {
     // Initialize all maps
     terrain_map.assign(64, std::vector<TerrainType>(64, TerrainType::no_terrain));
     entities_map.assign(64, std::vector<EntityType>(64, EntityType::no_entity));
@@ -120,10 +124,10 @@ sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vecto
 
 }
 
-void Map::neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result, const Map &map) {
+void Map::neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result) {
     for (auto &dir : DIRS) {
         sf::Vector2i next(curr.x + dir.x, curr.y + dir.y);
-        if (next.x < 64 && next.y < 64 && map.terrain_map[next.y][next.x] < 2 && map.terrain_map[next.y][next.x] != -1) {
+        if (next.x < 64 && next.y < 64 && Map::terrain_map[next.y][next.x] < 2 && Map::terrain_map[next.y][next.x] != -1) {
             result.push_back(next);
         }
     }
@@ -134,7 +138,7 @@ double Map::cost(const sf::Vector2i &from, const sf::Vector2i &to) {
 }
 
 void Map::a_star(const sf::Vector2i &start, const sf::Vector2i &goal,
-                 std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from, const Map &map) {
+                 std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from) {
 
     auto my_comp =
             [](const std::pair<sf::Vector2i, double> &e1, const std::pair<sf::Vector2i, double> &e2)
@@ -156,7 +160,7 @@ void Map::a_star(const sf::Vector2i &start, const sf::Vector2i &goal,
             break;
         }
 
-        neighbors(current, curr_neighbours, map);
+        neighbors(current, curr_neighbours);
         for (auto& next : curr_neighbours) {
             double new_cost = cost_so_far[current] + cost(current, next);
             if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) {
@@ -184,8 +188,7 @@ void Map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal, std::unordered
     std::reverse(path.begin(), path.end());
 }
 
-void
-Map::find_path(const sf::Vector2i start, const sf::Vector2i goal, std::vector<sf::Vector2i> &path, const Map &map) {
+void Map::find_path(const sf::Vector2i start, const sf::Vector2i goal, std::vector<sf::Vector2i> &path) {
 
 }
 

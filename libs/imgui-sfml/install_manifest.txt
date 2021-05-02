@@ -1,0 +1,13 @@
+C:/Program Files (x86)/imgui_sfml/lib/libImGui-SFML.a
+C:/Program Files (x86)/imgui_sfml/include/imgui-SFML.h
+C:/Program Files (x86)/imgui_sfml/include/imgui-SFML_export.h
+C:/Program Files (x86)/imgui_sfml/include/imconfig-SFML.h
+C:/Program Files (x86)/imgui_sfml/include/imconfig.h
+C:/Program Files (x86)/imgui_sfml/include/imgui.h
+C:/Program Files (x86)/imgui_sfml/include/imgui_internal.h
+C:/Program Files (x86)/imgui_sfml/include/imstb_rectpack.h
+C:/Program Files (x86)/imgui_sfml/include/imstb_textedit.h
+C:/Program Files (x86)/imgui_sfml/include/imstb_truetype.h
+C:/Program Files (x86)/imgui_sfml/include/imgui_stdlib.h
+C:/Program Files (x86)/imgui_sfml/lib/cmake/ImGui-SFML/ImGui-SFMLConfig.cmake
+C:/Program Files (x86)/imgui_sfml/lib/cmake/ImGui-SFML/ImGui-SFMLConfig-noconfig.cmake

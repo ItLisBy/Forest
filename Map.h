@@ -14,23 +14,24 @@ enum EntityType {
     food,
     water
 };
+enum TerrainType {
+    no_terrain = -1,
+    grass,
+    forest,
+    river,
+    rock
+};
 
 class Map {
 public:
-    enum TerrainType {
-        no_terrain = -1,
-        grass,
-        forest,
-        river,
-        rock
-    };
+
     enum Maps{
         terrain,
         entities,
         animals
     };
 
-    Map();
+    static void init();
 
     /// \brief Function that spawn animals on map
     /// \param all Vector of integers. Every integer is number of animals of some type. Type depends on index
@@ -47,6 +48,9 @@ public:
     template<typename T>
     static sf::Vector2i find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos, const int &circle);
 
+    static void find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::vector<sf::Vector2i> &path);
+
+private:
     static void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result);
 
     static inline double cost(const sf::Vector2i &from, const sf::Vector2i &to);
@@ -54,12 +58,10 @@ public:
     static void a_star(const sf::Vector2i &start, const sf::Vector2i &goal,
                        std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from);
 
-    static void reconstruct_path(sf::Vector2i start, sf::Vector2i goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
-                          std::vector<sf::Vector2i> &path);
+    static void reconstruct_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
+                                 std::vector<sf::Vector2i> &path);
 
     static inline double heuristic(const sf::Vector2i &a, const sf::Vector2i &b);
-
-    static void find_path(const sf::Vector2i start, const sf::Vector2i goal, std::vector<sf::Vector2i> &path);
 
 private:
     static std::vector<std::vector<TerrainType>> terrain_map;

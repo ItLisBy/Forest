@@ -1,0 +1,2 @@
+C:\Programms\MinGW\bin\ar.exe qc libImGui-SFML.a CMakeFiles/ImGui-SFML.dir/imgui-SFML.cpp.obj CMakeFiles/ImGui-SFML.dir/C_/libs/imgui/imgui.cpp.obj CMakeFiles/ImGui-SFML.dir/C_/libs/imgui/imgui_draw.cpp.obj CMakeFiles/ImGui-SFML.dir/C_/libs/imgui/imgui_tables.cpp.obj CMakeFiles/ImGui-SFML.dir/C_/libs/imgui/imgui_widgets.cpp.obj CMakeFiles/ImGui-SFML.dir/C_/libs/imgui/misc/cpp/imgui_stdlib.cpp.obj
+C:\Programms\MinGW\bin\ranlib.exe libImGui-SFML.a

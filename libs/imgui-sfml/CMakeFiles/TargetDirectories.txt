@@ -1,0 +1,7 @@
+C:/libs/imgui-sfml/CMakeFiles/install/strip.dir
+C:/libs/imgui-sfml/CMakeFiles/ImGui-SFML.dir
+C:/libs/imgui-sfml/CMakeFiles/install/local.dir
+C:/libs/imgui-sfml/CMakeFiles/install.dir
+C:/libs/imgui-sfml/CMakeFiles/edit_cache.dir
+C:/libs/imgui-sfml/CMakeFiles/rebuild_cache.dir
+C:/libs/imgui-sfml/CMakeFiles/list_install_components.dir

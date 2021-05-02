@@ -12,6 +12,10 @@ namespace std {
     };
 }
 
+std::vector<std::vector<TerrainType>> Map::terrain_map;
+std::vector<std::vector<EntityType>> Map::entities_map;
+std::vector<std::vector<AnimalType>> Map::animals_map;
+
 const std::array<sf::Vector2i, 8> Map::DIRS =  {sf::Vector2i(1, 0),
                                                 sf::Vector2i(0, -1),
                                                 sf::Vector2i(-1, 0),
@@ -21,9 +25,9 @@ int vector_length(const sf::Vector2i &vec){
     return sqrt((vec.x*vec.x) + (vec.y*vec.y));
 }
 
-Map::Map() {
+void Map::init() {
     // Initialize all maps
-    terrain_map.assign(64, std::vector<TerrainType>(64, TerrainType::no_terrain));
+    Map::terrain_map.assign(64, std::vector<TerrainType>(64, TerrainType::no_terrain));
     entities_map.assign(64, std::vector<EntityType>(64, EntityType::no_entity));
     animals_map.assign(64, std::vector<AnimalType>(64, AnimalType::no_animal));
 
@@ -31,7 +35,7 @@ Map::Map() {
     // Generate centers
     const short NUM_CENTERS = 32;
     std::vector<int> centers(NUM_CENTERS, 0);
-    srand(time(0));
+    srand(time(NULL));
     for (int i = 0; i < NUM_CENTERS; ++i) {
         centers[i] = rand() % 4096;
         int terr = rand() % 10;
@@ -63,9 +67,10 @@ Map::Map() {
 
 void Map::spawn(const std::vector<int> &all) {
     srand(time(0));
+    int pos;
     for (int i = 0; i < all.size(); ++i) {
         for (int j = 0; j < all[i]; ++j) {
-            int pos = rand() % 4096;
+            pos = rand() % 4096;
             if (terrain_map[pos / 64][pos % 64] != TerrainType::river &&
                 terrain_map[pos / 64][pos % 64] != TerrainType::rock &&
                 entities_map[pos / 64][pos % 64] == EntityType::no_entity) {
@@ -102,7 +107,7 @@ sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vecto
 
         for (int j = 0; j < circle*2; ++j) {
             if (map[current_pos.y][current_pos.x] == type_find) {
-                on_circle.push_back(sf::Vector2i(current_pos.x, current_pos.y));
+                on_circle.emplace_back(current_pos.x, current_pos.y);
             }
             current_pos += sf::Vector2i(delta_x, delta_y);
         }
@@ -177,8 +182,8 @@ double Map::heuristic(const sf::Vector2i &a, const sf::Vector2i &b) {
     return abs(a.x - b.x) + abs(a.y - b.y);
 }
 
-void Map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
-                      std::vector<sf::Vector2i> &path) {
+void Map::reconstruct_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
+                           std::vector<sf::Vector2i> &path) {
     sf::Vector2i current = goal;
     path.push_back(current);
     while (current != start) {
@@ -188,7 +193,9 @@ void Map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal, std::unordered
     std::reverse(path.begin(), path.end());
 }
 
-void Map::find_path(const sf::Vector2i start, const sf::Vector2i goal, std::vector<sf::Vector2i> &path) {
-
+void Map::find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::vector<sf::Vector2i> &path) {
+    std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
+    a_star(start, goal, came_from);
+    reconstruct_path(start, goal, came_from, path);
 }
 

@@ -16,6 +16,12 @@ public:
         female, male
     };
 
+    enum Needs {
+        Sleep,
+        Breed,
+        Eat,
+        Drink
+    };
 
     /// \brief Struct that represent one gene of "animals"
     /// \var speed With this speed "animals" param will decrease
@@ -36,6 +42,10 @@ public:
 
     virtual void eat();
 
+    virtual void move();
+
+    virtual Animal::Needs findOutMainNeed();
+
     virtual void setPosition(const sf::Vector2i &pos);
 
     sf::Vector2i getPosition();
@@ -51,6 +61,7 @@ protected:
     int hunger_;
     int thirst_;
     int tiredness_;
+    int speed_;
     sf::Vector2i position_;
     std::vector<sf::Vector2i> path_;
 };

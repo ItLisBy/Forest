@@ -12,7 +12,7 @@ using namespace sf;
 int main() {
     bool stopped = true;
 
-    Map main_map(Map::TerritoryType::middle_forest);
+    Map::init();
 
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Forest", Style::Titlebar | Style::Close);
 
@@ -46,8 +46,6 @@ int main() {
             ImGui::End();
 
         }
-
-
 
         window.clear(Color(255, 255, 255));
         ImGui::SFML::Render(window);

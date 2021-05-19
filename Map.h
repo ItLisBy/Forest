@@ -51,7 +51,7 @@ public:
     static void find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::vector<sf::Vector2i> &path);
 
 private:
-    static void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result);
+    static inline void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result);
 
     static inline double cost(const sf::Vector2i &from, const sf::Vector2i &to);
 

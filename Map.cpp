@@ -185,12 +185,11 @@ double Map::heuristic(const sf::Vector2i &a, const sf::Vector2i &b) {
 void Map::reconstruct_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::unordered_map<sf::Vector2i, sf::Vector2i> &came_from,
                            std::vector<sf::Vector2i> &path) {
     sf::Vector2i current = goal;
-    path.push_back(current);
     while (current != start) {
-        current = came_from[current];
         path.push_back(current);
+        current = came_from[current];
     }
-    std::reverse(path.begin(), path.end());
+    //std::reverse(path.begin(), path.end());
 }
 
 void Map::find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::vector<sf::Vector2i> &path) {

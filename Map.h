@@ -11,8 +11,7 @@
 
 enum EntityType {
     no_entity,
-    food,
-    water
+    food
 };
 enum TerrainType {
     no_terrain = -1,

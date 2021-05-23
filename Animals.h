@@ -4,10 +4,13 @@
 #include <vector>
 #include "SFML/System.hpp"
 
+#define NUM_ANIMALS 3
+
 enum AnimalType {
     no_animal = -1,
     Sheep,
-    Wolf
+    Wolf,
+    Hare
 };
 
 class Animal {
@@ -58,7 +61,7 @@ public:
 
     virtual void die();
 
-    virtual void isDead();
+    virtual bool isDead();
 
 protected:
     SexType sex_;
@@ -75,11 +78,30 @@ protected:
     bool freezed;
     Animal* breedable;
     bool dead = false;
+    static const unsigned short int MAX_VALUE_OF_NEED = 100;
 };
 
 class Sheep : public Animal {
 public:
     Sheep(const sf::Vector2i &pos, const Animal::SexType &sex,
+          const int &hunger, const int &thirst, const int &tiredness, const int &breed);
+
+    void breeding(Animal *animal, const sf::Vector2i &pos) override;
+
+};
+
+class Wolf : public Animal {
+public:
+    Wolf(const sf::Vector2i &pos, const Animal::SexType &sex,
+          const int &hunger, const int &thirst, const int &tiredness, const int &breed);
+
+    void breeding(Animal *animal, const sf::Vector2i &pos) override;
+
+};
+
+class Hare : public Animal {
+public:
+    Hare(const sf::Vector2i &pos, const Animal::SexType &sex,
           const int &hunger, const int &thirst, const int &tiredness, const int &breed);
 
     void breeding(Animal *animal, const sf::Vector2i &pos) override;

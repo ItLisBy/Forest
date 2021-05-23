@@ -2,15 +2,16 @@
 #include "Map.h"
 
 void Animal::sleep() {
-
+    this->tiredness_ = MAX_VALUE_OF_NEED;
 }
 
 void Animal::drink(const sf::Vector2i &pos) {
-
+    this->thirst_ += this->genom_[Needs::Drink].limit;
 }
 
 void Animal::eat(const sf::Vector2i &pos) {
-
+    this->hunger_ += this->genom_[Needs::Eat].limit;
+    Map::rm_entity(Map::Maps::entities, pos);
 }
 
 void Animal::move() {
@@ -31,7 +32,6 @@ Animal::Needs Animal::findOutMainNeed() {
     else if (this->tiredness_ < this->genom_[Animal::Needs::Sleep].limit) {
         return Animal::Needs::Sleep;
     }
-
 }
 
 void Animal::setPosition(const sf::Vector2i &pos) {
@@ -83,13 +83,13 @@ void Animal::do_things() {
                 this->sleep();
                 return;
             } else if (this->main_need_ == Needs::Eat) {
-                sf::Vector2i end_point = Map::find(Map::Maps::entities, EntityType::food, this->position_, 1);
+                sf::Vector2i end_point = Map::find(EntityType::food, this->position_, 1);
                 Map::find_path(this->position_, end_point, this->path_);
             } else if (this->main_need_ == Needs::Drink) {
-                sf::Vector2i end_point = Map::find(Map::Maps::terrain, TerrainType::river, this->position_, 1);
+                sf::Vector2i end_point = Map::find(TerrainType::river, this->position_, 1);
                 Map::find_path(this->position_, end_point, this->path_);
             } else {
-                sf::Vector2i end_point = Map::find(Map::Maps::animals, this->type_of_, this->position_, 1);
+                sf::Vector2i end_point = Map::find(this->type_of_, this->position_, 1);
                 Map::find_path(this->position_, end_point, this->path_);
             }
         }
@@ -109,8 +109,17 @@ void Animal::do_things() {
     }
 }
 
+void Animal::die() {
+
+}
+
+bool Animal::isDead() {
+
+}
+
 Sheep::Sheep(const sf::Vector2i &pos, const Animal::SexType &sex,
-             const int &hunger = 255, const int &thirst = 255, const int &tiredness = 255, const int &breed = 255)
+             const int &hunger = MAX_VALUE_OF_NEED, const int &thirst = MAX_VALUE_OF_NEED,
+             const int &tiredness = MAX_VALUE_OF_NEED, const int &breed = MAX_VALUE_OF_NEED)
         : Animal(pos, sex, hunger, thirst, tiredness, breed, AnimalType::Sheep) {
 
 }

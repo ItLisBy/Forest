@@ -1,5 +1,6 @@
 #include "SFML/Graphics.hpp"
 #include "Map.h"
+#include "Animals.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
 
@@ -11,6 +12,8 @@ using namespace sf;
 
 int main() {
     bool stopped = true;
+    float anim [NUM_ANIMALS] = {0};
+    float i_anim[NUM_ANIMALS] = {0};
 
     Map::init();
 
@@ -24,7 +27,7 @@ int main() {
 
     while(window.isOpen()){
         Event event;
-        int process;
+        int process = 0;
         //Handling events
         while (window.pollEvent(event))
         {
@@ -38,12 +41,34 @@ int main() {
 
         ImGui::SFML::Update(window, delta_clock.restart());
 
-        if (stopped){
-            ImGui::Begin("Tools");
-            if(ImGui::Button("Start", ImVec2(160, 40))) {
-                stopped = false;
+        ImGui::Begin("Tools");
+        if (ImGui::Button(stopped ? "Start" : "Stop", ImVec2(160, 40))) {
+            stopped = !stopped;
+        }
+        if (stopped) {
+            if (ImGui::SliderFloat("Sheep", &i_anim[AnimalType::Sheep], 0.f, 20.f, "%.0f")) {
+                anim[AnimalType::Sheep] = i_anim[AnimalType::Sheep];
             }
-            ImGui::End();
+            if (ImGui::SliderFloat("Hares", &i_anim[AnimalType::Hare], 0.f, 20.f, "%.0f")) {
+                anim[AnimalType::Hare] = i_anim[AnimalType::Hare];
+            }
+            if (ImGui::SliderFloat("Wolfs", &i_anim[AnimalType::Wolf], 0.f, 20.f, "%.0f")) {
+                anim[AnimalType::Wolf] = i_anim[AnimalType::Wolf];
+            }
+        }
+        else {
+            ImGui::Text("Sheep: %.0f", anim[AnimalType::Sheep]);
+            ImGui::Text("Hares: %.0f", anim[AnimalType::Hare]);
+            ImGui::Text("Wolfs: %.0f", anim[AnimalType::Wolf]);
+        }
+
+        ImGui::End();
+
+        switch (process) {
+            case 0: {
+
+                break;
+            }
 
         }
 

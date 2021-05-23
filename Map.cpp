@@ -15,13 +15,14 @@ namespace std {
 std::vector<std::vector<TerrainType>> Map::terrain_map;
 std::vector<std::vector<EntityType>> Map::entities_map;
 std::vector<std::vector<AnimalType>> Map::animals_map;
+std::vector<Animal*> Map::all_animals;
 
 const std::array<sf::Vector2i, 8> Map::DIRS =  {sf::Vector2i(1, 0),
                                                 sf::Vector2i(0, -1),
                                                 sf::Vector2i(-1, 0),
                                                 sf::Vector2i(0, 1)};
 
-int vector_length(const sf::Vector2i &vec){
+int Map::vector_length(const sf::Vector2i &vec){
     return sqrt((vec.x*vec.x) + (vec.y*vec.y));
 }
 
@@ -55,13 +56,13 @@ void Map::init() {
             terrain_map[i][j] = terrain_map[min.y][min.x];
         }
     }
-
+/*
     for (int i = 0; i < terrain_map.size(); ++i) {
         for (int j = 0; j < terrain_map[i].size(); ++j) {
             std::cout << terrain_map[i][j] << " ";
         }
         std::cout << std::endl;
-    }
+    }*/
 
 }
 
@@ -83,18 +84,7 @@ void Map::spawn(const std::vector<int> &all) {
     }
 }
 
-template<typename T>
-sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vector2i &pos, const int &circle) {
-    std::vector<std::vector<T>>* map;
-    if (map_type == Maps::terrain) {
-        map = &terrain_map;
-    }
-    else if (map_type == Maps::entities) {
-        map = &entities_map;
-    }
-    else if (map_type == Maps::animals) {
-        map = &animals_map;
-    }
+sf::Vector2i Map::find(const TerrainType &type_find, const sf::Vector2i &pos, const int &circle) {
 
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
@@ -106,7 +96,7 @@ sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vecto
         int delta_x = roots[i+1];
 
         for (int j = 0; j < circle*2; ++j) {
-            if (map[current_pos.y][current_pos.x] == type_find) {
+            if (terrain_map[current_pos.y][current_pos.x] == type_find) {
                 on_circle.emplace_back(current_pos.x, current_pos.y);
             }
             current_pos += sf::Vector2i(delta_x, delta_y);
@@ -115,7 +105,77 @@ sf::Vector2i Map::find(const Maps &map_type, const T &type_find, const sf::Vecto
 
     // If entities not found then go to the next circle
     if (on_circle.empty()) {
-        return find(map_type, type_find, pos, circle + 1);
+        return find(type_find, pos, circle + 1);
+    }
+    else {
+        sf::Vector2i min = on_circle[0];
+        for (auto p : on_circle) {
+            if (vector_length(pos - p) < vector_length(pos - min)) {
+                min = p;
+            }
+        }
+        return min;
+    }
+
+}
+
+sf::Vector2i Map::find(const EntityType &type_find, const sf::Vector2i &pos, const int &circle) {
+
+    std::vector<sf::Vector2i> on_circle;
+    sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
+    short roots[] =  {0, 1, 0, -1, 0};
+
+    // 4 is number of "sides" of circle that we should inspect
+    for (int i = 0; i < 4; ++i) {
+        int delta_y = roots[i];
+        int delta_x = roots[i+1];
+
+        for (int j = 0; j < circle*2; ++j) {
+            if (entities_map[current_pos.y][current_pos.x] == type_find) {
+                on_circle.emplace_back(current_pos.x, current_pos.y);
+            }
+            current_pos += sf::Vector2i(delta_x, delta_y);
+        }
+    }
+
+    // If entities not found then go to the next circle
+    if (on_circle.empty()) {
+        return find(type_find, pos, circle + 1);
+    }
+    else {
+        sf::Vector2i min = on_circle[0];
+        for (auto p : on_circle) {
+            if (vector_length(pos - p) < vector_length(pos - min)) {
+                min = p;
+            }
+        }
+        return min;
+    }
+
+}
+
+sf::Vector2i Map::find(const AnimalType &type_find, const sf::Vector2i &pos, const int &circle) {
+
+    std::vector<sf::Vector2i> on_circle;
+    sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
+    short roots[] =  {0, 1, 0, -1, 0};
+
+    // 4 is number of "sides" of circle that we should inspect
+    for (int i = 0; i < 4; ++i) {
+        int delta_y = roots[i];
+        int delta_x = roots[i+1];
+
+        for (int j = 0; j < circle*2; ++j) {
+            if (animals_map[current_pos.y][current_pos.x] == type_find) {
+                on_circle.emplace_back(current_pos.x, current_pos.y);
+            }
+            current_pos += sf::Vector2i(delta_x, delta_y);
+        }
+    }
+
+    // If entities not found then go to the next circle
+    if (on_circle.empty()) {
+        return find(type_find, pos, circle + 1);
     }
     else {
         sf::Vector2i min = on_circle[0];
@@ -196,5 +256,19 @@ void Map::find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::ve
     std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
     a_star(start, goal, came_from);
     reconstruct_path(start, goal, came_from, path);
+}
+
+void Map::rm_entity(const Map::Maps &map_type, const sf::Vector2i &pos) {
+    if (map_type == Maps::entities) {
+        entities_map[pos.y][pos.x] = no_entity;
+    }
+    else if (map_type == Maps::animals) {
+        animals_map[pos.y][pos.x] = no_animal;
+        for (auto &an : all_animals) {
+            if (an->getPosition() == pos) {
+                an->die();
+            }
+        }
+    }
 }
 

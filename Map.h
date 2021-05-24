@@ -15,10 +15,10 @@ enum EntityType {
 };
 enum TerrainType {
     no_terrain = -1,
-    grass,
     forest,
-    river,
-    rock
+    grass,
+    rock,
+    river
 };
 
 class Map {
@@ -65,10 +65,11 @@ private:
 
     static int vector_length(const sf::Vector2i &vec);
 
-private:
+public:
     static std::vector<std::vector<TerrainType>> terrain_map;
     static std::vector<std::vector<EntityType>> entities_map;
     static std::vector<std::vector<AnimalType>> animals_map;
+
     static std::vector<Animal*> all_animals;
 
     static const std::array<sf::Vector2i, 8> DIRS;

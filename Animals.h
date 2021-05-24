@@ -7,7 +7,7 @@
 #define NUM_ANIMALS 3
 
 enum AnimalType {
-    no_animal = -1,
+    no_animal,
     Sheep,
     Wolf,
     Hare

@@ -12,6 +12,7 @@ using namespace sf;
 #define HEIGHT 768
 
 enum Proc{
+    before,
     start,
     m_proc,
     ref
@@ -20,10 +21,11 @@ enum Proc{
 int main() {
     bool stopped = true;
     bool tropical = false;
-    float anim [NUM_ANIMALS] = {0};
-    float i_anim[NUM_ANIMALS] = {0};
-    Proc prev_process = start;
-    Proc process = start;
+    float anim [NUM_ANIMALS + 1] = {0};
+    float i_anim[NUM_ANIMALS + 1] = {0};
+    Proc prev_process = before;
+    Proc process = before;
+    unsigned int anim_n = 0;
 
     Map::init();
 
@@ -40,7 +42,7 @@ int main() {
 
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Forest", Style::Titlebar | Style::Close);
 
-    window.setFramerateLimit(200);
+    window.setFramerateLimit(30);
     ImGui::SFML::Init(window);
 
     //Loop program while it's window is open
@@ -79,41 +81,69 @@ int main() {
         ImGui::Begin("Tools");
         if (ImGui::Button(stopped ? "Start" : "Stop", ImVec2(160, 40))) {
             stopped = !stopped;
-            if (process != m_proc)
+            if (process == before)
+                process = start;
+            else if (process != before)
                 process = m_proc;
         }
         if (stopped) {
-            if (process == start)
+            if (process == before)
                 if (ImGui::RadioButton("Use alt. tileset", tropical)) {
                     tropical = !tropical;
                     if (!map.load(tropical ? "textures/tropical.png" : "textures/usual.png", sf::Vector2u(16, 16), Map::terrain_map, 64, 64))
                         return -1;
                 }
-            if (ImGui::SliderFloat("Sheep", &i_anim[AnimalType::Sheep], 0.f, 20.f, "%.0f")) {
-                anim[AnimalType::Sheep] = i_anim[AnimalType::Sheep];
+            if (ImGui::SliderFloat("Sheep", &i_anim[AnimalType::TSheep], 0.f, 20.f, "%.0f")) {
+                if (process == before)
+                    anim[AnimalType::TSheep] = i_anim[AnimalType::TSheep];
             }
-            if (ImGui::SliderFloat("Hares", &i_anim[AnimalType::Hare], 0.f, 20.f, "%.0f")) {
-                anim[AnimalType::Hare] = i_anim[AnimalType::Hare];
+            if (ImGui::SliderFloat("Hares", &i_anim[AnimalType::THare], 0.f, 20.f, "%.0f")) {
+                if (process == before)
+                    anim[AnimalType::THare] = i_anim[AnimalType::THare];
             }
-            if (ImGui::SliderFloat("Wolfs", &i_anim[AnimalType::Wolf], 0.f, 20.f, "%.0f")) {
-                anim[AnimalType::Wolf] = i_anim[AnimalType::Wolf];
+            if (ImGui::SliderFloat("Wolfs", &i_anim[AnimalType::TWolf], 0.f, 20.f, "%.0f")) {
+                if (process == before)
+                    anim[AnimalType::TWolf] = i_anim[AnimalType::TWolf];
             }
         }
         else {
-            ImGui::Text("Sheep: %.0f", anim[AnimalType::Sheep]);
-            ImGui::Text("Hares: %.0f", anim[AnimalType::Hare]);
-            ImGui::Text("Wolfs: %.0f", anim[AnimalType::Wolf]);
+            ImGui::Text("Sheep: %.0f", anim[AnimalType::TSheep]);
+            ImGui::Text("Hares: %.0f", anim[AnimalType::THare]);
+            ImGui::Text("Wolfs: %.0f", anim[AnimalType::TWolf]);
         }
 
         ImGui::End();
 
         switch (process) {
-            case start:
+            case before:
 
                 break;
 
-            case m_proc:
+            case start:
+                Map::spawn(anim);
+                Map::spawn_food();
+                if (!anim_map.load("textures/animals.png", sf::Vector2u(16, 16), Map::animals_map, 64, 64))
+                    return -1;
+                if (!ent_map.load("textures/ent.png", sf::Vector2u(16, 16), Map::entities_map, 64, 64))
+                    return -1;
+                process = m_proc;
+                anim_n = 0;
+                break;
 
+            case m_proc:
+                if (stopped)
+                    break;
+                Map::all_animals[anim_n]->do_things();
+                if (!anim_map.load("textures/animals.png", sf::Vector2u(16, 16), Map::animals_map, 64, 64))
+                    return -1;
+                if (!ent_map.load("textures/ent.png", sf::Vector2u(16, 16), Map::entities_map, 64, 64))
+                    return -1;
+                if (anim_n != Map::all_animals.size() - 1) {
+                    ++anim_n;
+                }
+                else {
+                    anim_n = 0;
+                }
                 break;
 
             case ref:

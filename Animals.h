@@ -8,9 +8,9 @@
 
 enum AnimalType {
     no_animal,
-    Sheep,
-    Wolf,
-    Hare
+    TSheep,
+    TWolf,
+    THare
 };
 
 class Animal {
@@ -39,7 +39,7 @@ public:
 
     virtual void sleep();
 
-    virtual void breeding(Animal *animal, const sf::Vector2i &pos) = 0;
+    virtual void breeding(const sf::Vector2i &pos);
 
     virtual void drink(const sf::Vector2i &pos);
 
@@ -63,30 +63,35 @@ public:
 
     virtual bool isDead();
 
+    AnimalType getType();
+
 protected:
-    SexType sex_;
-    Gen genom_[4];
-    int breed_;
-    int hunger_;
-    int thirst_;
-    int tiredness_;
-    int speed_;
-    sf::Vector2i position_;
+    SexType sex_ = SexType::female;
+    Gen genom_[4] = {
+            {5, 20},
+            {5, 40},
+            {8, 60},
+            {5, 80}
+    };
+    int breed_ = NULL;
+    int hunger_ = NULL;
+    int thirst_ = NULL;
+    int tiredness_ = NULL;
+    int live_ = 100;
+    sf::Vector2i position_ = sf::Vector2i(0, 0);
     std::vector<sf::Vector2i> path_;
-    Animal::Needs main_need_;
-    const AnimalType type_of_;
-    bool freezed;
-    Animal* breedable;
+    Animal::Needs main_need_ = Animal::Needs::Sleep;
+    const AnimalType type_of_ = AnimalType::no_animal;
+    bool freezed = false;
     bool dead = false;
     static const unsigned short int MAX_VALUE_OF_NEED = 100;
 };
 
 class Sheep : public Animal {
 public:
-    Sheep(const sf::Vector2i &pos, const Animal::SexType &sex,
-          const int &hunger, const int &thirst, const int &tiredness, const int &breed);
+    Sheep(const sf::Vector2i &pos, const Animal::SexType &sex, const int &hunger, const int &thirst, const int &tiredness, const int &breed);
 
-    void breeding(Animal *animal, const sf::Vector2i &pos) override;
+    //void breeding(const sf::Vector2i &pos) override;
 
 };
 
@@ -95,7 +100,7 @@ public:
     Wolf(const sf::Vector2i &pos, const Animal::SexType &sex,
           const int &hunger, const int &thirst, const int &tiredness, const int &breed);
 
-    void breeding(Animal *animal, const sf::Vector2i &pos) override;
+    //void breeding(const sf::Vector2i &pos) override;
 
 };
 
@@ -104,7 +109,7 @@ public:
     Hare(const sf::Vector2i &pos, const Animal::SexType &sex,
           const int &hunger, const int &thirst, const int &tiredness, const int &breed);
 
-    void breeding(Animal *animal, const sf::Vector2i &pos) override;
+    //void breeding(const sf::Vector2i &pos) override;
 
 };
 

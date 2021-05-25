@@ -16,8 +16,9 @@ std::vector<std::vector<TerrainType>> Map::terrain_map;
 std::vector<std::vector<EntityType>> Map::entities_map;
 std::vector<std::vector<AnimalType>> Map::animals_map;
 std::vector<Animal*> Map::all_animals;
+int Map::num_of_food = 100;
 
-const std::array<sf::Vector2i, 8> Map::DIRS =  {sf::Vector2i(1, 0),
+const std::array<sf::Vector2i, 4> Map::DIRS =  {sf::Vector2i(1, 0),
                                                 sf::Vector2i(0, -1),
                                                 sf::Vector2i(-1, 0),
                                                 sf::Vector2i(0, 1)};
@@ -36,7 +37,7 @@ void Map::init() {
     // Generate centers
     const short NUM_CENTERS = 32;
     std::vector<int> centers(NUM_CENTERS, 0);
-    srand(time(NULL));
+    srand(time(0));
     for (int i = 0; i < NUM_CENTERS; ++i) {
         centers[i] = rand() % 4096;
         int terr = rand() % 10;
@@ -66,25 +67,46 @@ void Map::init() {
 
 }
 
-void Map::spawn(const std::vector<int> &all) {
+void Map::spawn(const float *anim) {
     srand(time(0));
     int pos;
-    for (int i = 0; i < all.size(); ++i) {
-        for (int j = 0; j < all[i]; ++j) {
+    Animal* tmp_a;
+    for (int i = 1; i < NUM_ANIMALS + 1; ++i) {
+        for(int j = 0; j < anim[i]; ++j) {
             pos = rand() % 4096;
             if (terrain_map[pos / 64][pos % 64] != TerrainType::river &&
                 terrain_map[pos / 64][pos % 64] != TerrainType::rock &&
                 entities_map[pos / 64][pos % 64] == EntityType::no_entity) {
-                animals_map[pos / 64][pos % 64] = AnimalType(i);
+                if (i == AnimalType::TSheep) {
+                    tmp_a = new Sheep(sf::Vector2i(pos % 64, pos / 64),
+                                           (rand() % 2 ? Animal::SexType::female : Animal::SexType::male),
+                                           100, 100, 100, 100);
+                }
+                else if (i == AnimalType::TWolf) {
+                    tmp_a = new Wolf(sf::Vector2i(pos % 64, pos / 64),
+                                      (rand() % 2 ? Animal::SexType::female : Animal::SexType::male),
+                                      100, 100, 100, 100);
+                }
+                else if (i == AnimalType::THare) {
+                    tmp_a = new Hare(sf::Vector2i(pos % 64, pos / 64),
+                                      (rand() % 2 ? Animal::SexType::female : Animal::SexType::male),
+                                      100, 100, 100, 100);
+                }
+                animals_map[pos / 64][pos % 64] = tmp_a->getType();
+                all_animals.push_back(tmp_a);
             }
             else {
-                j -= 1;
+                --j;
             }
         }
     }
 }
 
+
 sf::Vector2i Map::find(const TerrainType &type_find, const sf::Vector2i &pos, const int &circle) {
+
+    if (circle > 30)
+        return pos;
 
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
@@ -96,8 +118,11 @@ sf::Vector2i Map::find(const TerrainType &type_find, const sf::Vector2i &pos, co
         int delta_x = roots[i+1];
 
         for (int j = 0; j < circle*2; ++j) {
-            if (terrain_map[current_pos.y][current_pos.x] == type_find) {
-                on_circle.emplace_back(current_pos.x, current_pos.y);
+            if (current_pos.x < 64 && current_pos.y < 64 &&
+            current_pos.x >=0 && current_pos.y >= 0) {
+                if (terrain_map[current_pos.y][current_pos.x] == type_find) {
+                    on_circle.emplace_back(current_pos.x, current_pos.y);
+                }
             }
             current_pos += sf::Vector2i(delta_x, delta_y);
         }
@@ -121,6 +146,9 @@ sf::Vector2i Map::find(const TerrainType &type_find, const sf::Vector2i &pos, co
 
 sf::Vector2i Map::find(const EntityType &type_find, const sf::Vector2i &pos, const int &circle) {
 
+    if (circle > 30)
+        return pos;
+
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
     short roots[] =  {0, 1, 0, -1, 0};
@@ -131,8 +159,11 @@ sf::Vector2i Map::find(const EntityType &type_find, const sf::Vector2i &pos, con
         int delta_x = roots[i+1];
 
         for (int j = 0; j < circle*2; ++j) {
-            if (entities_map[current_pos.y][current_pos.x] == type_find) {
-                on_circle.emplace_back(current_pos.x, current_pos.y);
+            if (current_pos.x < 64 && current_pos.y < 64 &&
+                current_pos.x >=0 && current_pos.y >= 0) {
+                if (entities_map[current_pos.y][current_pos.x] == type_find) {
+                    on_circle.emplace_back(current_pos.x, current_pos.y);
+                }
             }
             current_pos += sf::Vector2i(delta_x, delta_y);
         }
@@ -156,6 +187,9 @@ sf::Vector2i Map::find(const EntityType &type_find, const sf::Vector2i &pos, con
 
 sf::Vector2i Map::find(const AnimalType &type_find, const sf::Vector2i &pos, const int &circle) {
 
+    if (circle > 30)
+        return pos;
+
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
     short roots[] =  {0, 1, 0, -1, 0};
@@ -166,11 +200,15 @@ sf::Vector2i Map::find(const AnimalType &type_find, const sf::Vector2i &pos, con
         int delta_x = roots[i+1];
 
         for (int j = 0; j < circle*2; ++j) {
-            if (animals_map[current_pos.y][current_pos.x] == type_find) {
-                on_circle.emplace_back(current_pos.x, current_pos.y);
+            if (current_pos.x < 64 && current_pos.y < 64 &&
+                current_pos.x >=0 && current_pos.y >= 0) {
+                if (animals_map[current_pos.y][current_pos.x] == type_find) {
+                    on_circle.emplace_back(current_pos.x, current_pos.y);
+                }
             }
             current_pos += sf::Vector2i(delta_x, delta_y);
         }
+
     }
 
     // If entities not found then go to the next circle
@@ -190,9 +228,12 @@ sf::Vector2i Map::find(const AnimalType &type_find, const sf::Vector2i &pos, con
 }
 
 void Map::neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result) {
+    result.erase(result.begin(), result.end());
     for (auto &dir : DIRS) {
         sf::Vector2i next(curr.x + dir.x, curr.y + dir.y);
-        if (next.x < 64 && next.y < 64 && Map::terrain_map[next.y][next.x] < 2 && Map::terrain_map[next.y][next.x] != -1) {
+        if (next.x < 64 && next.y < 64 &&
+            next.x >= 0 && next.y >= 0 &&
+            Map::terrain_map[next.y][next.x] < 2 && Map::terrain_map[next.y][next.x] != -1) {
             result.push_back(next);
         }
     }
@@ -270,5 +311,31 @@ void Map::rm_entity(const Map::Maps &map_type, const sf::Vector2i &pos) {
             }
         }
     }
+}
+
+void Map::spawn_food() {
+    srand(time(0));
+    int pos;
+    EntityType type;
+    for (int i = 0; i < num_of_food; ++i) {
+        if (i < num_of_food / 2)
+            type = EntityType::food;
+        else
+            type = EntityType::meat;
+        pos = rand() % 4096;
+        if (terrain_map[pos / 64][pos % 64] != TerrainType::river &&
+            terrain_map[pos / 64][pos % 64] != TerrainType::rock &&
+            entities_map[pos / 64][pos % 64] == EntityType::no_entity &&
+            animals_map[pos / 64][pos % 64] == AnimalType::no_animal) {
+            entities_map[pos / 64][pos % 64] = type;
+        }
+        else {
+            --i;
+        }
+    }
+}
+
+void Map::place_food(const EntityType &type) {
+
 }
 

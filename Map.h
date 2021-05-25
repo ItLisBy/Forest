@@ -11,7 +11,8 @@
 
 enum EntityType {
     no_entity,
-    food
+    food,
+    meat
 };
 enum TerrainType {
     no_terrain = -1,
@@ -34,8 +35,11 @@ public:
 
     /// \brief Function that spawn animals on map
     /// \param all Vector of integers. Every integer is number of animals of some type. Type depends on index
-    static void spawn(const std::vector<int> &all);
+    static void spawn(const float *anim);
 
+    static void spawn_food();
+
+    static void place_food(const EntityType &type);
 
     /// \brief Find the closest entity of type T to pos
     /// \param type_find Search object
@@ -72,7 +76,9 @@ public:
 
     static std::vector<Animal*> all_animals;
 
-    static const std::array<sf::Vector2i, 8> DIRS;
+    static int num_of_food;
+
+    static const std::array<sf::Vector2i, 4> DIRS;
 };
 
 #endif //FOREST_MAP_H

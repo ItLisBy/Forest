@@ -85,6 +85,7 @@ void Animal::do_things() {
         this->breed_ < 0 ||
         this->live_ < 0) {
         this->die();
+        return;
     }
 
     if (!this->freezed) {
@@ -136,6 +137,7 @@ void Animal::die() {
             pos = i;
         }
     }
+    delete Map::all_animals[pos];
     Map::all_animals.erase(Map::all_animals.begin() + pos);
 }
 

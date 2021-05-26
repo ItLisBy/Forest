@@ -68,17 +68,17 @@ public:
 protected:
     SexType sex_ = SexType::female;
     Gen genom_[4] = {
-            {5, 20},
+            {5, 35},
             {5, 40},
-            {8, 60},
+            {8, 80},
             {5, 80}
     };
-    int breed_ = NULL;
-    int hunger_ = NULL;
-    int thirst_ = NULL;
-    int tiredness_ = NULL;
-    int live_ = 100;
-    sf::Vector2i position_ = sf::Vector2i(0, 0);
+    int breed_ = 0;
+    int hunger_ = 0;
+    int thirst_ = 0;
+    int tiredness_ = 0;
+    int live_ = 1000;
+    sf::Vector2i position_;
     std::vector<sf::Vector2i> path_;
     Animal::Needs main_need_ = Animal::Needs::Sleep;
     const AnimalType type_of_ = AnimalType::no_animal;

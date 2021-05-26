@@ -54,8 +54,9 @@ public:
 
     static void rm_entity(const Maps &map_type, const sf::Vector2i &pos);
 
-private:
     static inline void neighbors(const sf::Vector2i &curr, std::vector<sf::Vector2i> &result);
+
+private:
 
     static inline double cost(const sf::Vector2i &from, const sf::Vector2i &to);
 

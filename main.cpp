@@ -15,7 +15,8 @@ enum Proc{
     before,
     start,
     m_proc,
-    ref
+    ref,
+    end
 };
 
 int main() {
@@ -23,6 +24,8 @@ int main() {
     bool tropical = false;
     float anim [NUM_ANIMALS + 1] = {0};
     float i_anim[NUM_ANIMALS + 1] = {0};
+    auto s_time = time(0);
+    long e_time = NULL;
     Proc prev_process = before;
     Proc process = before;
     unsigned int anim_n = 0;
@@ -42,7 +45,7 @@ int main() {
 
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Forest", Style::Titlebar | Style::Close);
 
-    window.setFramerateLimit(30);
+    window.setFramerateLimit(15);
     ImGui::SFML::Init(window);
 
     //Loop program while it's window is open
@@ -133,6 +136,16 @@ int main() {
             case m_proc:
                 if (stopped)
                     break;
+                if (Map::all_animals.empty()) {
+                    process = end;
+                    break;
+                }
+                if (Map::num_of_food < 80) {
+                    srand(time(0));
+                    for (int i = 0; i < 100 - Map::num_of_food; ++i) {
+                        Map::place_food(rand() % 2 ? EntityType::food : EntityType::meat);
+                    }
+                }
                 Map::all_animals[anim_n]->do_things();
                 if (!anim_map.load("textures/animals.png", sf::Vector2u(16, 16), Map::animals_map, 64, 64))
                     return -1;
@@ -162,8 +175,21 @@ int main() {
                 }
                 ImGui::End();
                 break;
+
+            case end:
+                e_time = time(0) - s_time;
+                stopped = true;
+                break;
         }
 
+        if (stopped && process == end){
+            ImGui::Begin("End");
+            ImGui::Text("Simulation end\nAll animals died");
+            if (ImGui::Button("Exit")) {
+                exit (0);
+            }
+            ImGui::End();
+        }
         window.clear(Color(255, 255, 255));
         window.draw(map);
         window.draw(anim_map);

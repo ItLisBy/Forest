@@ -104,9 +104,12 @@ void Map::spawn(const float *anim) {
 
 
 sf::Vector2i Map::find(const TerrainType &type_find, const sf::Vector2i &pos, const int &circle) {
-
-    if (circle > 30)
-        return pos;
+    srand(time(0));
+    if (circle > 30) {
+        std::vector<sf::Vector2i> curr_neighbours;
+        Map::neighbors(pos, curr_neighbours);
+        return curr_neighbours[rand() % curr_neighbours.size()];
+    }
 
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
@@ -145,9 +148,12 @@ sf::Vector2i Map::find(const TerrainType &type_find, const sf::Vector2i &pos, co
 }
 
 sf::Vector2i Map::find(const EntityType &type_find, const sf::Vector2i &pos, const int &circle) {
-
-    if (circle > 30)
-        return pos;
+    srand(time(0));
+    if (circle > 30) {
+        std::vector<sf::Vector2i> curr_neighbours;
+        Map::neighbors(pos, curr_neighbours);
+        return curr_neighbours[rand() % curr_neighbours.size()];
+    }
 
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
@@ -186,9 +192,12 @@ sf::Vector2i Map::find(const EntityType &type_find, const sf::Vector2i &pos, con
 }
 
 sf::Vector2i Map::find(const AnimalType &type_find, const sf::Vector2i &pos, const int &circle) {
-
-    if (circle > 30)
-        return pos;
+    srand(time(0));
+    if (circle > 30) {
+        std::vector<sf::Vector2i> curr_neighbours;
+        Map::neighbors(pos, curr_neighbours);
+        return curr_neighbours[rand() % curr_neighbours.size()];
+    }
 
     std::vector<sf::Vector2i> on_circle;
     sf::Vector2i current_pos = pos - sf::Vector2i(circle, circle);
@@ -295,6 +304,7 @@ void Map::reconstruct_path(const sf::Vector2i &start, const sf::Vector2i &goal, 
 
 void Map::find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::vector<sf::Vector2i> &path) {
     std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
+    path.clear();
     a_star(start, goal, came_from);
     reconstruct_path(start, goal, came_from, path);
 }
@@ -302,6 +312,7 @@ void Map::find_path(const sf::Vector2i &start, const sf::Vector2i &goal, std::ve
 void Map::rm_entity(const Map::Maps &map_type, const sf::Vector2i &pos) {
     if (map_type == Maps::entities) {
         entities_map[pos.y][pos.x] = no_entity;
+        Map::num_of_food--;
     }
     else if (map_type == Maps::animals) {
         animals_map[pos.y][pos.x] = no_animal;
@@ -336,6 +347,19 @@ void Map::spawn_food() {
 }
 
 void Map::place_food(const EntityType &type) {
+    srand(time(0));
+    int pos;
+    while (true){
+        pos = rand() % 4096;
+        if (terrain_map[pos / 64][pos % 64] != TerrainType::river &&
+            terrain_map[pos / 64][pos % 64] != TerrainType::rock &&
+            entities_map[pos / 64][pos % 64] == EntityType::no_entity &&
+            animals_map[pos / 64][pos % 64] == AnimalType::no_animal) {
+            entities_map[pos / 64][pos % 64] = type;
+            ++num_of_food;
+            break;
+        }
+    }
 
 }
 

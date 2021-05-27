@@ -147,6 +147,24 @@ int main() {
                     }
                 }
                 Map::all_animals[anim_n]->do_things();
+                for (auto &a : anim) {
+                    a = 0.0;
+                }
+                for (auto an : Map::all_animals) {
+                    switch (an->getType()) {
+                        case TSheep:
+                            anim[TSheep] += 1;
+                            break;
+
+                        case TWolf:
+                            anim[TWolf] += 1;
+                            break;
+
+                        case THare:
+                            anim[THare] += 1;
+                            break;
+                    }
+                }
                 if (!anim_map.load("textures/animals.png", sf::Vector2u(16, 16), Map::animals_map, 64, 64))
                     return -1;
                 if (!ent_map.load("textures/ent.png", sf::Vector2u(16, 16), Map::entities_map, 64, 64))
